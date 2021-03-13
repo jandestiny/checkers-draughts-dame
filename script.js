@@ -34,6 +34,39 @@ function initGame()
     drawBoard()
 }
 
+function drawBoard2(){
+    let output = ""
+    let inverse_row = false
+    let counter_overall = 1
+    let row_size = Math.sqrt(board.properties.size)
+
+    // Go through all rows
+    for(let i=1; i <= row_size; i++){
+        
+        //Go through each field in row
+        for(let j=1; j <= row_size; j++){
+
+            let field2check
+
+            if(inverse_row){
+                field2check = i*row_size-(j-1)
+            }else{
+                field2check = i*row_size-(row_size-j)
+            }
+
+            console.log(field2check)
+        }
+
+        //inverse direction after each row
+        inverse_row = !inverse_row
+
+        //Newline after end of row
+        output += "\n"
+        
+    }
+
+}
+
 function drawBoard()
 {
     //Development version
@@ -46,7 +79,6 @@ function drawBoard()
 
             for (let j = 1; j <= Math.sqrt(board.properties.size); j++) {
                 let pos = i * Math.sqrt(board.properties.size) + j
-                console.log(pos)
                 let piece = board.pieces.find(x => x.position == pos) || null
 
                 if (piece != null) {
@@ -64,7 +96,6 @@ function drawBoard()
 
             for (let k = Math.sqrt(board.properties.size); k >= 1; k--) {
                 let pos = i * Math.sqrt(board.properties.size) + k
-                console.log(pos)
                 let piece = board.pieces.find(x => x.position == pos) || null
 
                 if (piece != null) {
