@@ -17,66 +17,78 @@ function initGame()
     //Clear Pieces
     board.pieces = []
 
-    //Fill Pieces in snake motion, beginning from the top left
-    for (let i = 1; i <= board.properties.size; i++) {
+    let board_size_root = Math.sqrt(board.properties.size)
+    let shifted = true;
 
-        //If current place is in the light team and on valid ground
-        if (i % 2 != 0 && i < 24) {
-            board.pieces.push({ team: 0, position: i, doubled: false })
+    //Row loop
+    for (let i = 0; i <= board_size_root; i++) {
+
+        //Column loop
+        for (let j = 0; j <= board_size_root; j++) {
+
+            if (shifted) {
+                //If current row is in the light team and on valid ground
+                if (i <= 2 && j % 2 == 0) {
+                    board.pieces.push({ team: 0, row: i, column: j, doubled: false })
+                }
+
+                //If current row is in the dark team and on valid ground
+                else if (i >= 6 && j % 2 == 0) {
+                    board.pieces.push({ team: 1, row: i, column: j, doubled: false })
+                }
+
+            } else {
+                //If current row is in the light team and on valid ground
+                if (i <= 2 && j % 2 != 0) {
+                    board.pieces.push({ team: 0, row: i, column: j, doubled: false })
+                }
+
+                //If current row is in the dark team and on valid ground
+                else if (i >= 6 && j % 2 != 0) {
+                    board.pieces.push({ team: 1, row: i, column: j, doubled: false })
+                }
+            }
         }
 
-        //If current place is in the dark team and on valid ground
-        else if (i % 2 != 0 && i > 40) {
-            board.pieces.push({ team: 1, position: i, doubled: false })
-        }
+        shifted = !shifted
     }
 
     drawBoard()
 }
 
-function drawBoard(){
-    let output = ""
-    let inverse_row = false
-    let counter_overall = 1
-    let row_size = Math.sqrt(board.properties.size)
+function drawBoard()
+{
+    let output = "\n"
+    let board_size_root = Math.sqrt(board.properties.size)
+    let pieces = board.pieces
 
-    // Go through all rows
-    for(let i=1; i <= row_size; i++){
-        
-        //Go through each field in row
-        for(let j=1; j <= row_size; j++){
+    //Row loop
+    for (let i = 0; i <= board_size_root; i++) {
 
-            let field2check
+        let current_row_pieces = pieces.filter(piece => piece.row == i)
 
-            //If the row is inverse (snake-pattern), count backwards
-            if(inverse_row){
-                field2check = i*row_size-(j-1)
-            }else{
-                field2check = i*row_size-(row_size-j)
-            }
+        //Column loop
+        for (let j = 0; j <= board_size_root; j++) {
 
-            let piece = board.pieces.find(x => x.position == field2check) || null
+            let current_piece = current_row_pieces.find(piece => piece.column == j) || null
 
-                if (piece != null) {
-                    if (piece.team == 0) {
-                        output += "o"
-                    } else {
-                        output += "x"
-                    }
+            if (current_piece) {
+
+                if (current_piece.team == 0) {
+                    output += "o"
                 } else {
-                    output += " "
+                    output += "x"
                 }
+            }
+            else {
+                output += " "
+            }
         }
 
-        //inverse direction after each row
-        inverse_row = !inverse_row
-
-        //Newline after end of row
         output += "\n"
-        
     }
 
-    console.log(output)
+    return output
 }
 
 function move(from, to)
@@ -87,24 +99,25 @@ function move(from, to)
 
     //Validation
 
-        //Check if "from" position contains piece
-        if (source != null) {
+    //Check if "from" position contains piece
+    if (source != null) {
 
-            //Check if "to" position is reachable from "from" position
-            if(isDirectDiagonalNeighbor(from, to) || isJumpedDiagonalNeigbor(from, to)){
+        //Check if "to" position is reachable from "from" position
+        if (isDirectDiagonalNeighbor(from, to) || isJumpedDiagonalNeigbor(from, to)) {
 
-                //Check if "to" position is valid and unoccupied
-                if (target == null && to > 0 && to <= Math.sqrt(board.properties.size)) {
+            //Check if "to" position is valid and unoccupied
+            if (target == null && to > 0 && to <= Math.sqrt(board.properties.size)) {
 
                 //Move Piece
                 source.position = to
             }
-            }
-            
         }
+
+    }
 }
 
-function isDirectDiagonalNeighbor(from, to){
+function isDirectDiagonalNeighbor(from, to)
+{
     //Get all diagonal neighbors from "from" position
     let neighbors = []
 
