@@ -34,7 +34,7 @@ function initGame()
     drawBoard()
 }
 
-function drawBoard2(){
+function drawBoard(){
     let output = ""
     let inverse_row = false
     let counter_overall = 1
@@ -48,13 +48,24 @@ function drawBoard2(){
 
             let field2check
 
+            //If the row is inverse (snake-pattern), count backwards
             if(inverse_row){
                 field2check = i*row_size-(j-1)
             }else{
                 field2check = i*row_size-(row_size-j)
             }
 
-            console.log(field2check)
+            let piece = board.pieces.find(x => x.position == field2check) || null
+
+                if (piece != null) {
+                    if (piece.team == 0) {
+                        output += "o"
+                    } else {
+                        output += "x"
+                    }
+                } else {
+                    output += " "
+                }
         }
 
         //inverse direction after each row
@@ -63,55 +74,6 @@ function drawBoard2(){
         //Newline after end of row
         output += "\n"
         
-    }
-
-}
-
-function drawBoard()
-{
-    //Development version
-
-    var output = ""
-
-    for (let i = 1; i <= Math.sqrt(board.properties.size); i++) {
-
-        if (i % 2 != 0) {
-
-            for (let j = 1; j <= Math.sqrt(board.properties.size); j++) {
-                let pos = i * Math.sqrt(board.properties.size) + j
-                let piece = board.pieces.find(x => x.position == pos) || null
-
-                if (piece != null) {
-                    if (piece.team == 0) {
-                        output += "o"
-                    } else {
-                        output += "x"
-                    }
-                } else {
-                    output += " "
-                }
-            }
-
-        } else {
-
-            for (let k = Math.sqrt(board.properties.size); k >= 1; k--) {
-                let pos = i * Math.sqrt(board.properties.size) + k
-                let piece = board.pieces.find(x => x.position == pos) || null
-
-                if (piece != null) {
-                    if (piece.team == 0) {
-                        output += "o"
-                    } else {
-                        output += "x"
-                    }
-                } else {
-                    output += " "
-                }
-            }
-
-        }
-
-        output += "\n"
     }
 
     console.log(output)
@@ -125,14 +87,28 @@ function move(from, to)
 
     //Validation
 
-    //Check if "from" position contains piece
-    if (source != null) {
+        //Check if "from" position contains piece
+        if (source != null) {
 
-        //Check if "to" position is valid and unoccupied
-        if (from % target == null) {
+            //Check if "to" position is reachable from "from" position
+            if(isDirectDiagonalNeighbor(from, to) || isJumpedDiagonalNeigbor(from, to)){
 
-            //Move Piece
+                //Check if "to" position is valid and unoccupied
+                if (target == null && to > 0 && to <= Math.sqrt(board.properties.size)) {
 
+                //Move Piece
+                source.position = to
+            }
+            }
+            
         }
-    }
+}
+
+function isDirectDiagonalNeighbor(from, to){
+    //Get all diagonal neighbors from "from" position
+    let neighbors = []
+
+    //Top right neighbor
+    let topright = (from)
+
 }
