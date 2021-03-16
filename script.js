@@ -91,6 +91,8 @@ function drawBoard()
     return output
 }
 
+
+//TODO Needs rework after layout change
 function move(from, to)
 {
     //Get relevant pieces
@@ -103,7 +105,7 @@ function move(from, to)
     if (source != null) {
 
         //Check if "to" position is reachable from "from" position
-        if (isDirectDiagonalNeighbor(from, to) || isJumpedDiagonalNeigbor(from, to)) {
+        if (isDirectDiagonalNeighbor(from, to) || isDirectJumpedDiagonalNeigbor(from, to)) {
 
             //Check if "to" position is valid and unoccupied
             if (target == null && to > 0 && to <= Math.sqrt(board.properties.size)) {
@@ -118,10 +120,17 @@ function move(from, to)
 
 function isDirectDiagonalNeighbor(from, to)
 {
-    //Get all diagonal neighbors from "from" position
-    let neighbors = []
+    return isXthDiagonalNeighbor(from, to, 1)
+}
 
-    //Top right neighbor
-    let topright = (from)
+function isDirectJumpedDiagonalNeigbor(from, to)
+{
+    return isXthDiagonalNeighbor(from, to, 2)
+}
+
+function isXthDiagonalNeighbor(from, to, distance)
+{
+    let board_size_root = Math.sqrt(board.properties.size)
+
 
 }
