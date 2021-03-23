@@ -5,3 +5,20 @@
     align-items: center;
     justify-content: center;
 }
+
+body{
+    background-color: grey;
+}
+
+.piece{
+    border-radius: 0px;
+    transition: border-radius .5s ease-in-out 50ms;
+}
+
+.piece:hover{
+    border-radius: 15px;
+}
+
+.chip{
+    margin: 0 auto;
+}
