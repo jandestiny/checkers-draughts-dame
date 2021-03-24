@@ -7,7 +7,8 @@ var board = {
         numOfDark: 12,
         turn: 0 //0 as in Team 0 -> Light
     },
-    pieces: []
+    pieces: [],
+    validator: new Validator()
 }
 
 //Two Last clicked pieces
@@ -193,28 +194,26 @@ function movePiece(from, to)
     let source = board.pieces.find(piece => piece.row == from.row && piece.column == from.column) || null
     let target = board.pieces.find(piece => piece.row == to.row && piece.column == to.column) || null
 
-    // //Validation (outsource in validation.js later!)
+    //Abort if source does not contain a moveable piece OR move is invalid
+    //TODO Send message to Notification engine
+    if (source == null || !board.validator.validateMove(source, target || to)) {
+        console.log("Invalid move.")
+        return
+    }
 
-    // //Check if "from" position contains piece
-    // if (source != null) {
+    //Log move (TODO link to notification engine)
+    console.log(`Team ${source.team} moves from %c[Row: ${from.row}, Column: ${from.column}] %cto %c[Row: ${to.row}, Column: ${to.column}]`, "color:red", "color:white", "color:green")
 
-    //     //Check if "to" position is reachable from "from" position
-    //     if (isDirectDiagonalNeighbor(from, to) || isDirectJumpedDiagonalNeigbor(from, to)) {
-
-    //         //Check if "to" position is valid and unoccupied
-    //         if (target == null && to > 0 && to <= Math.sqrt(board.properties.size)) {
-
-    //             //Move Piece
-    //             source.position = to
-    //         }
-    //     }
-
-    // }
+    //lol
+    // console.log('%c\uD83D\uDE09 Giant Rainbow Text!',
+    //     'font-weight:bold; font-size:50px;color:red; ' +
+    //     'text-shadow:3px 3px 0 red,6px 6px 0 orange,9px 9px 0 yellow, ' +
+    //     '12px 12px 0 green,15px 15px 0 blue,18px 18px 0 indigo,21px 21px 0 violet');
 
     //Move
-
     source.row = to.row
     source.column = to.column
+
 }
 
 //Event handler for clicking on any cell.
@@ -235,8 +234,8 @@ function clickedPieceHandler(event)
 
         else { //Else, push it, print two clicked pieces to console, move the piece, reset the array and update screen
             clickedPieces.push(clickedCell)
-            console.table(clickedPieces)
             movePiece(clickedPieces[0], clickedPieces[1])
+            console.table(clickedPieces)
             clickedPieces = []
             updateBoard()
         }
@@ -245,6 +244,13 @@ function clickedPieceHandler(event)
         clickedPieces = []
         console.error(e)
     }
+}
+
+//Debug functions
+
+function printBoardToConsole()
+{
+    console.log(updateBoard())
 }
 
 //deprecated -> will be moved to validator
