@@ -11,7 +11,7 @@ var board = {
 }
 
 //Two Last clicked pieces
-var lastPieces = []
+var clickedPieces = []
 
 //Check if needed and/or beneficial later
 class Piece
@@ -25,16 +25,26 @@ class Piece
     }
 }
 
-
 initGame()
 
 function initGame()
+{
+    createDefaultPieces()
+    createBoard()
+    updateBoard()
+}
+
+/*
+Initialize default pieces (default checkers pieces)
+!TODO Should be customizable later
+*/
+function createDefaultPieces()
 {
     //Clear Pieces
     board.pieces = []
 
     let board_size_root = Math.sqrt(board.properties.size)
-    let shifted = true;
+    let shifted = true
 
     //Row loop
     for (let i = 0; i < board_size_root; i++) {
@@ -48,6 +58,7 @@ function initGame()
                     board.pieces.push({ team: 0, row: i, column: j, doubled: false })
                 }
 
+
                 //If current row is in the dark team and on valid ground
                 else if (i >= 5 && j % 2 != 0) {
                     board.pieces.push({ team: 1, row: i, column: j, doubled: false })
@@ -59,6 +70,7 @@ function initGame()
                     board.pieces.push({ team: 0, row: i, column: j, doubled: false })
                 }
 
+
                 //If current row is in the dark team and on valid ground
                 else if (i >= 5 && j % 2 == 0) {
                     board.pieces.push({ team: 1, row: i, column: j, doubled: false })
@@ -68,12 +80,9 @@ function initGame()
 
         shifted = !shifted
     }
-
-    createGraphics()
-    drawBoard()
 }
 
-function drawBoard()
+function updateBoard()
 {
     let output = "\n"
     let board_size_root = Math.sqrt(board.properties.size)
@@ -100,10 +109,10 @@ function drawBoard()
                 try {
                     if (current_piece.team == 0) {
                         output += "o"
-                        document.querySelector(`td[data-row='${i}'][data-column='${j}']`).insertAdjacentElement("beforeend", getPieceElement("cyan"))
+                        document.querySelector(`td[data-row='${i}'][data-column='${j}']`).insertAdjacentElement("beforeend", getNewPieceElement("cyan"))
                     } else {
                         output += "x"
-                        document.querySelector(`td[data-row='${i}'][data-column='${j}']`).insertAdjacentElement("beforeend", getPieceElement("red"))
+                        document.querySelector(`td[data-row='${i}'][data-column='${j}']`).insertAdjacentElement("beforeend", getNewPieceElement("red"))
                     }
                 } catch (e) {
                     console.error(e)
@@ -122,17 +131,19 @@ function drawBoard()
 }
 
 //Create HTML board as table and mark every cell with the according attributes
-function createGraphics()
+function createBoard()
 {
     let game = document.querySelector("#game")
     let table = document.createElement("table")
 
     let board_size_root = Math.sqrt(board.properties.size)
 
+    //Row loop
     for (let i = 0; i < board_size_root; i++) {
 
         let currentTableRow = document.createElement("tr")
 
+        //Column Loop
         for (let j = 0; j < board_size_root; j++) {
 
             let currentCell = document.createElement("td")
@@ -141,9 +152,9 @@ function createGraphics()
             currentCell.dataset.row = i
             currentCell.dataset.column = j
             currentCell.classList.add("piece")
+            currentCell.addEventListener("click", (event) => clickedPieceHandler(event))
 
-            currentCell.addEventListener("click", (event) => clickedPiece(event))
-
+            //Color background of cell in checked pattern thorugh even or uneven number of summed row and column values
             if ((i + j) % 2 == 0) {
                 currentCell.style.backgroundColor = "white"
             } else {
@@ -162,7 +173,7 @@ function createGraphics()
 }
 
 //Create a playable figurine aka chip
-function getPieceElement(color)
+function getNewPieceElement(color)
 {
     let piece = document.createElement("div")
     piece.style.height = "60px"
@@ -176,9 +187,9 @@ function getPieceElement(color)
 
 
 //TODO Needs rework after layout change
-function move(from, to)
+function movePiece(from, to)
 {
-    //Get relevant pieces
+    //Get relevant pieces (if existant)
     let source = board.pieces.find(piece => piece.row == from.row && piece.column == from.column) || null
     let target = board.pieces.find(piece => piece.row == to.row && piece.column == to.column) || null
 
@@ -206,9 +217,10 @@ function move(from, to)
     source.column = to.column
 }
 
-//Event handler for clicking on any cell
-function clickedPiece(event)
+//Event handler for clicking on any cell.
+function clickedPieceHandler(event)
 {
+    // Get relevant information about clicked Piece
     let clickedRow = (event.target.dataset.row || event.target.parentNode.dataset.row)
     let clickedColumn = (event.target.dataset.column || event.target.parentNode.dataset.column)
     let clickedCell = board.pieces.find(piece => piece.row == clickedRow && piece.column == clickedColumn)
@@ -216,19 +228,21 @@ function clickedPiece(event)
 
     try {
 
-        if (lastPieces.length == 0) {
-            lastPieces.push(clickedCell)
+        //If the clicked Piece is the first clicked piece, push it in the clickedPieces Array
+        if (clickedPieces.length == 0) {
+            clickedPieces.push(clickedCell)
         }
-        else {
-            lastPieces.push(clickedCell)
-            console.table(lastPieces)
-            move(lastPieces[0], lastPieces[1])
-            lastPieces = []
-            drawBoard()
+
+        else { //Else, push it, print two clicked pieces to console, move the piece, reset the array and update screen
+            clickedPieces.push(clickedCell)
+            console.table(clickedPieces)
+            movePiece(clickedPieces[0], clickedPieces[1])
+            clickedPieces = []
+            updateBoard()
         }
 
     } catch (e) {
-        lastPieces = []
+        clickedPieces = []
         console.error(e)
     }
 }
