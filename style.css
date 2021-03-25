@@ -6,6 +6,12 @@
     justify-content: center;
 }
 
+#game{
+    -webkit-box-shadow: 0px 0px 50px 24px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 50px 24px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 50px 24px rgba(0,0,0,0.75);
+}
+
 body{
     background-color: grey;
 }
@@ -21,4 +27,8 @@ body{
 
 .chip{
     margin: 0 auto;
+}
+
+.highlightedCell{
+    background-color: yellow !important;
 }

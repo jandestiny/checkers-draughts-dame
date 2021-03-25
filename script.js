@@ -197,6 +197,7 @@ function movePiece(from, to)
     //Abort if source does not contain a moveable piece OR move is invalid
     //TODO Send message to Notification engine
     if (source == null || !board.validator.validateMove(source, target || to)) {
+        removeAllHighlights()
         console.log("Invalid move.")
         return
     }
@@ -229,11 +230,14 @@ function clickedPieceHandler(event)
 
         //If the clicked Piece is the first clicked piece, push it in the clickedPieces Array
         if (clickedPieces.length == 0) {
+            removeAllHighlights()
             clickedPieces.push(clickedCell)
+            updateHighlightedPieces()
         }
 
         else { //Else, push it, print two clicked pieces to console, move the piece, reset the array and update screen
             clickedPieces.push(clickedCell)
+            updateHighlightedPieces()
             movePiece(clickedPieces[0], clickedPieces[1])
             console.table(clickedPieces)
             clickedPieces = []
@@ -241,9 +245,35 @@ function clickedPieceHandler(event)
         }
 
     } catch (e) {
+        removeAllHighlights()
         clickedPieces = []
         console.error(e)
     }
+}
+
+//Highlights any cell in the clickedPieces Array
+function updateHighlightedPieces()
+{
+    //Get html elements for currently clicked Pieces
+    let clickedPiecesHTML = []
+
+    for (let i = 0; i < clickedPieces.length; i++) {
+        clickedPiecesHTML.push(document.querySelector(`td[data-row='${clickedPieces[i].row}'][data-column='${clickedPieces[i].column}']`))
+    }
+
+    clickedPiecesHTML.forEach((piece =>
+    {
+        piece.classList.add("highlightedCell")
+    }))
+}
+
+//Remove highlights from all cells
+function removeAllHighlights()
+{
+    document.querySelectorAll(".highlightedCell").forEach(element =>
+    {
+        element.classList.remove("highlightedCell")
+    })
 }
 
 //Debug functions
