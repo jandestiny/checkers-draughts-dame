@@ -8,6 +8,18 @@ var board = {
         turn: 0 //0 as in Team 0 -> Light
     },
     pieces: [],
+    teams: [
+        {
+            id: 0,
+            name: "Team 1",
+            color: "cyan"
+        },
+        {
+            id: 1,
+            name: "Team 2",
+            color: "red"
+        }
+    ],
     validator: new Validator()
 }
 
@@ -38,6 +50,7 @@ function initGame()
 /*
 Initialize default pieces (default checkers pieces)
 !TODO Should be customizable later
+!TODO Can be simplified, 'shifted' no longer needed -> use even and uneven sum of row+column
 */
 function createDefaultPieces()
 {
@@ -56,25 +69,25 @@ function createDefaultPieces()
             if (shifted) {
                 //If current row is in the light team and on valid ground
                 if (i <= 2 && j % 2 != 0) {
-                    board.pieces.push({ team: 0, row: i, column: j, doubled: false })
+                    board.pieces.push({ team_id: 0, row: i, column: j, doubled: false })
                 }
 
 
                 //If current row is in the dark team and on valid ground
                 else if (i >= 5 && j % 2 != 0) {
-                    board.pieces.push({ team: 1, row: i, column: j, doubled: false })
+                    board.pieces.push({ team_id: 1, row: i, column: j, doubled: false })
                 }
 
             } else {
                 //If current row is in the light team and on valid ground
                 if (i <= 2 && j % 2 == 0) {
-                    board.pieces.push({ team: 0, row: i, column: j, doubled: false })
+                    board.pieces.push({ team_id: 0, row: i, column: j, doubled: false })
                 }
 
 
                 //If current row is in the dark team and on valid ground
                 else if (i >= 5 && j % 2 == 0) {
-                    board.pieces.push({ team: 1, row: i, column: j, doubled: false })
+                    board.pieces.push({ team_id: 1, row: i, column: j, doubled: false })
                 }
             }
         }
@@ -83,6 +96,8 @@ function createDefaultPieces()
     }
 }
 
+//Puts all existing chips in the right place on the board
+//TODO Simplify according to new "teams"-definition in boards obj & move the debug section with "output" to debug functions
 function updateBoard()
 {
     let output = "\n"
@@ -108,7 +123,7 @@ function updateBoard()
             if (current_piece) {
 
                 try {
-                    if (current_piece.team == 0) {
+                    if (current_piece.team_id == 0) {
                         output += "o"
                         document.querySelector(`td[data-row='${i}'][data-column='${j}']`).insertAdjacentElement("beforeend", getNewPieceElement("cyan"))
                     } else {
@@ -203,7 +218,7 @@ function movePiece(from, to)
     }
 
     //Log move (TODO link to notification engine)
-    console.log(`Team ${source.team} moves from %c[Row: ${from.row}, Column: ${from.column}] %cto %c[Row: ${to.row}, Column: ${to.column}]`, "color:red", "color:white", "color:green")
+    console.log(`${board.teams[source.team_id].name} moves from %c[Row: ${from.row}, Column: ${from.column}] %cto %c[Row: ${to.row}, Column: ${to.column}]`, "color:red", "color:white", "color:green")
 
     //lol
     // console.log('%c\uD83D\uDE09 Giant Rainbow Text!',
