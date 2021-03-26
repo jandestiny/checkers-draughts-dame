@@ -19,6 +19,8 @@ body{
 .piece{
     border-radius: 0px;
     transition: border-radius .5s ease-in-out 50ms;
+    width: 100px;
+    height: 100px;
 }
 
 .piece:hover{
@@ -27,6 +29,9 @@ body{
 
 .chip{
     margin: 0 auto;
+    height: 60px;
+    width: 60px;
+    border-radius: 45px;
 }
 
 .highlightedCell{

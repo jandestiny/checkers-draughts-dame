@@ -163,8 +163,6 @@ function createBoard()
         for (let j = 0; j < board_size_root; j++) {
 
             let currentCell = document.createElement("td")
-            currentCell.style.width = "100px"
-            currentCell.style.height = "100px"
             currentCell.dataset.row = i
             currentCell.dataset.column = j
             currentCell.classList.add("piece")
@@ -192,9 +190,6 @@ function createBoard()
 function getNewPieceElement(color)
 {
     let piece = document.createElement("div")
-    piece.style.height = "60px"
-    piece.style.width = "60px"
-    piece.style.borderRadius = "45px"
     piece.style.backgroundColor = color
     piece.classList.add("chip")
 
