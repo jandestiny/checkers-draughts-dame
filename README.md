@@ -8,3 +8,8 @@ This simple HTML/CSS/JS project provides a base/sandbox for creating any type of
 * Fork this project and create your own game!
 * No external libraries.
 * Currently not in active development.
+
+## TODO's
+
+* Build Validation class to enable custom, easy to implement, rule sets
+* Refactor code for easier understanding and usage
